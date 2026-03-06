@@ -1,5 +1,7 @@
 from django.utils import timezone
-from rest_framework import viewsets, status
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import viewsets, status, filters
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -11,11 +13,28 @@ from django.core.files.base import ContentFile
 from .models import Event, EventImage
 from .serializers import EventSerializer, EventImageSerializer
 from .permissions import IsSuperUser
+from .filters import EventFilter
 
+class EventPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 100
 
 class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
+    pagination_class = EventPagination
+
+    filter_backends = [
+        DjangoFilterBackend,
+        filters.SearchFilter,
+        filters.OrderingFilter
+    ]
+
+    filterset_class = EventFilter
+    search_fields = ['title', 'location__name']  # поиск по названию мероприятия или места
+    ordering_fields = ['title', 'start_datetime', 'end_datetime']  # разрешаем сортировку по этим полям
+    ordering = ['start_datetime']  # сортировка по умолчанию
 
     def get_permissions(self):
         """
