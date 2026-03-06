@@ -27,7 +27,6 @@ class Event(models.Model):
         related_name='events',
         verbose_name='Место проведения'
     )
-    weather = models.CharField(max_length=255, blank=True, verbose_name='Погода')
     rating = models.PositiveSmallIntegerField(
         validators=[MinValueValidator(0), MaxValueValidator(25)],
         verbose_name='Рейтинг (0-25)'
@@ -45,6 +44,49 @@ class Event(models.Model):
     def __str__(self):
         return self.title
 
+class WeatherData(models.Model):
+    WIND_DIRECTION_CHOICES = [
+        ('N', 'Северный'),
+        ('NNE', 'Северо-северо-восточный'),
+        ('NE', 'Северо-восточный'),
+        ('ENE', 'Восточно-северо-восточный'),
+        ('E', 'Восточный'),
+        ('ESE', 'Восточно-юго-восточный'),
+        ('SE', 'Юго-восточный'),
+        ('SSE', 'Юго-юго-восточный'),
+        ('S', 'Южный'),
+        ('SSW', 'Юго-юго-западный'),
+        ('SW', 'Юго-западный'),
+        ('WSW', 'Западно-юго-западный'),
+        ('W', 'Западный'),
+        ('WNW', 'Западно-северо-западный'),
+        ('NW', 'Северо-западный'),
+        ('NNW', 'Северо-северо-западный'),
+    ]
+
+    event = models.OneToOneField(
+        'Event',
+        on_delete=models.CASCADE,
+        related_name='weather_data',
+        verbose_name='Мероприятие'
+    )
+    temperature = models.FloatField(verbose_name='Температура (°C)')
+    humidity = models.PositiveSmallIntegerField(verbose_name='Влажность (%)')
+    pressure = models.PositiveSmallIntegerField(verbose_name='Давление (мм рт. ст.)')
+    wind_direction = models.CharField(
+        max_length=3,
+        choices=WIND_DIRECTION_CHOICES,
+        verbose_name='Направление ветра'
+    )
+    wind_speed = models.FloatField(verbose_name='Скорость ветра (м/с)')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='Время обновления')
+
+    class Meta:
+        verbose_name = 'Данные погоды'
+        verbose_name_plural = 'Данные погоды'
+
+    def __str__(self):
+        return f"Погода для {self.event.title} на {self.updated_at}"
 
 class EventImage(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='images')
