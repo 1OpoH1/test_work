@@ -15,6 +15,17 @@ class EventImageSerializer(serializers.ModelSerializer):
         fields = ['id', 'image', 'uploaded_at']
         read_only_fields = ['id', 'uploaded_at']
 
+class EventImageUploadSerializer(serializers.Serializer):
+    """Сериализатор для загрузки изображения мероприятия"""
+    image = serializers.ImageField(
+        help_text='Изображение для мероприятия (поддерживаются JPG, PNG, GIF)',
+        allow_empty_file=False,
+        use_url=False
+    )
+    
+    class Meta:
+        ref_name = 'EventImageUpload'
+
 
 class EventSerializer(serializers.ModelSerializer):
     location_detail = LocationSerializer(source='location', read_only=True)
