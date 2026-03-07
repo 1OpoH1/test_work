@@ -8,6 +8,6 @@ class LocationViewSet(viewsets.ModelViewSet):
     """
     CRUD для мест проведения. Доступ только суперпользователю.
     """
-    queryset = Location.objects.all().order_by('-created_at')
+    queryset = Location.objects.all()
     serializer_class = LocationSerializer
     permission_classes = [IsAuthenticated, IsSuperUser]  # требует аутентификации и прав суперпользователя

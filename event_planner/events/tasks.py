@@ -86,20 +86,3 @@ def update_event_weather():
         weather_obj, created = WeatherData.objects.update_or_create(event=event, defaults=weather_data)
         updated += 1
     return f"Weather updated for {updated} events."
-
-def fetch_weather(lat, lon, target_datetime):
-    """
-    Получение прогноза погоды из OpenWeatherMap (пример).
-    """
-    api_key = getattr(settings, 'OPENWEATHER_API_KEY', None)
-    if not api_key:
-        return None
-    # Здесь должен быть реальный запрос к API прогноза
-    # Для демонстрации возвращаем заглушку
-    # url = f"https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={api_key}&units=metric&lang=ru"
-    # response = requests.get(url)
-    # if response.status_code == 200:
-    #     data = response.json()
-    #     # Найти прогноз, ближайший к target_datetime
-    #     return f"{data['list'][0]['main']['temp']}°C, {data['list'][0]['weather'][0]['description']}"
-    return "Солнечно, +20°C"  # временная заглушка
