@@ -25,11 +25,6 @@ staticfiles/
 celerybeat-schedule
 celerybeat.pid
 
-# Docker
-.dockerignore
-Dockerfile
-docker-compose*.yml
-.docker/
 
 # IDE
 .vscode/
